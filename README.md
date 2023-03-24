@@ -8,12 +8,12 @@ It is simple to use just goto the folder where the interpreter is and :
 ```sh
 python brainfuck.py filename
 ```
-For example:
+>For example:
 ```sh
 python brainfuck.py test.bf
 ```
-Will give the output
-```s
+>Will give the output
+```
 Hello World!
 ```
 
