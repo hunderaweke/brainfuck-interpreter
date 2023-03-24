@@ -1,26 +1,40 @@
 import sys
+import msvcrt
 
-INCREASEMEMLOC = ">"
-DECREASMEMLOC = "<"
-INCREASEVAL = "+"
-DECREASEVAL = "-"
-CWHILE = "]"
-JUMPBACK = "["
-GETCHAR = ","
-PUTCHAR = "."
-ls = []
-for _ in range(255):
-    ls.append(0)
-chars = ">>++<+>-"
-index = 0
 
-for char in chars:
-    if char == INCREASEMEMLOC:
-        index += 1
-    if char == DECREASMEMLOC:
-        index -= 1
-    if char == INCREASEVAL and ls[index] <= 255:
-        ls[index] += 1
-    if char == DECREASEVAL and ls[index] > 0:
-        ls[index] -= 1
-print(*ls[0 : len(chars)])
+def evaluate(code):
+    bracemap = map(code)
+    cellptr, codeprt, cells = 0, 0, [0]
+    while codeprt < len(code):
+        command = code[codeprt]
+        if command == '>':
+            cellptr += 1
+            if cellptr == len(cells):
+                cells.append(0)
+        if command == "<":
+            cellptr -= 1
+
+        if command == '+':
+            cells[cellptr] += 1 if cells[cellptr < 255] else 0
+        if command == '-':
+            cells[cellptr] -= 1 if cells > 0 else 255
+        if command == '[' and cells[cellptr] == 0:
+            codeprt = bracemap[codeprt]
+        if command == ']' and cells[cellptr] != 0:
+            codeprt = bracemap[codeprt]
+        if command == ',':
+            cells[cellptr] = ord(msvcrt.getch())
+        if command == '.':
+            sys.stdout.write(chr(cells[cellptr]))
+
+
+def map(code):
+    temp, brace = [], {}
+    for position, command in enumerate(code):
+        if command == '[':
+            temp.append(position)
+        if command == ']':
+            start = temp.pop(position)
+            brace[start] = position
+            brace[position] = start
+    return brace
