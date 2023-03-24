@@ -1,4 +1,4 @@
-#  <img height=40px src=./icons/brainfuck.svg> Simple brainfuck to python interpreter <img height=40px src=./icons/python.svg> 
+<h1 align=center><img height=30px src=./icons/brainfuck.svg> Simple brainfuck to python interpreter <img height=30px src=./icons/python.svg></h1>
 
 <p>
 This is a simple brainfuck interpreter in python
