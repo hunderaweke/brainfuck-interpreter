@@ -1,8 +1,14 @@
 import sys
-import msvcrt
+from msvcrt import getch
+
+
+def execute(filename):
+    file = open(filename, "r")
+    evaluate(file.read())
 
 
 def evaluate(code):
+    code = cleanup(list(code))
     bracemap = map(code)
     cellptr, codeprt, cells = 0, 0, [0]
     while codeprt < len(code):
@@ -15,17 +21,24 @@ def evaluate(code):
             cellptr -= 1
 
         if command == '+':
-            cells[cellptr] += 1 if cells[cellptr < 255] else 0
+            if cells[cellptr] < 255:
+                cells[cellptr] += 1
+            else:
+                cells[cellptr] = 0
         if command == '-':
-            cells[cellptr] -= 1 if cells > 0 else 255
+            if cells[cellptr] > 0:
+                cells[cellptr] -= 1
+            else:
+                cells[cellptr] = 255
         if command == '[' and cells[cellptr] == 0:
             codeprt = bracemap[codeprt]
         if command == ']' and cells[cellptr] != 0:
             codeprt = bracemap[codeprt]
         if command == ',':
-            cells[cellptr] = ord(msvcrt.getch())
+            cells[cellptr] = ord(getch())
         if command == '.':
             sys.stdout.write(chr(cells[cellptr]))
+        codeprt += 1
 
 
 def map(code):
@@ -34,7 +47,23 @@ def map(code):
         if command == '[':
             temp.append(position)
         if command == ']':
-            start = temp.pop(position)
+            start = temp.pop()
             brace[start] = position
             brace[position] = start
     return brace
+
+
+def cleanup(code):
+    return ''.join(filter(lambda x: x in [
+        '[', '>', '<', ',', '.', '+', '-', ']'], code))
+
+
+def main():
+    if len(sys.argv) == 2:
+        execute(sys.argv[1])
+    else:
+        print("Usage: ", sys.argv[0], "filename")
+
+
+if __name__ == "__main__":
+    main()
